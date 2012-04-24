@@ -66,6 +66,7 @@ module VIM
         cursor = $curwin.cursor
         $curbuf.delete(i)
         $curwin.cursor = [[1,cursor.first-1].max,cursor.last] if cursor.first >= i
+        break if i >= $curbuf.length
       end
     end
   end
@@ -90,21 +91,24 @@ module CppAutoInclude
   USING_STD       = 'using namespace std;'
 
   class << self
+    def includes_and_content
+      # split includes and other content
+      includes, content = [['', 0]], ''
+      VIM::lines.each_with_index do |l, i|
+        if l =~ /^\s*#\s*include/
+          includes << [l, i+1]
+        else
+          content << l.gsub(/\/\/[^"]*(?:"[^"']*"[^"]*)*$/,'') << "\n"
+        end
+      end
+      [includes, content]
+    end
+
     def process
       return if $curbuf.length > LINES_THRESHOLD
 
       begin
-        lines = VIM::lines
-        includes, content, use_std = [['',0]], '', false
-
-        # split includes and other content
-        lines.each_with_index do |l, i|
-          if l =~ /#\s*include/
-            includes << [l, i+1]
-          else
-            content << l.gsub(/\/\/[^"]*(?:"[^"']*"[^"]*)*$/,'') << "\n"
-          end
-        end
+        use_std, includes, content = false, *includes_and_content
 
         # process each header
         HEADER_STD_KEYWORDS.each do |header, std, keywords|
@@ -114,17 +118,16 @@ module CppAutoInclude
 
           if has_keyword && !has_header
             VIM::append(includes.last.last, "#include <#{header}>")
+            includes = includes_and_content.first
           elsif !has_keyword && has_header
             VIM::remove(has_header.last)
+            includes = includes_and_content.first
           end
         end
 
-        # recalculate includes
-        includes = VIM::lines(true).select { |l| l.first =~ /#\s*include/ }
-
         # append empty line to last #include 
         # or remove top empty lines if no #include
-        if includes.empty?
+        if includes.last.last == 0
           VIM::remove(1, '')
         else
           VIM::append(includes.last.last, '')
@@ -138,11 +141,11 @@ module CppAutoInclude
           VIM::append(includes.last.last+2, '')
         elsif !use_std && has_std
           VIM::remove(nil, USING_STD)
-          VIM::remove(1, '') if includes.empty?
+          VIM::remove(1, '') if includes.last.last == 0
         end
       rescue => ex
-        File.open("/tmp/ex.txt", 'w') { |f| f.puts ex; f.puts ex.backtrace }
-        raise RuntimeError.new(ex.message)
+        # VIM hide backtrace information by default, re-raise with backtrace
+        raise RuntimeError.new("#{ex.message}: #{ex.backtrace}")
       end
     end
   end
