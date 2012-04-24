@@ -17,7 +17,7 @@ Usage
 Configuration
 =============
 Add following line in your `.vimrc` to make your C++ code 
-in `/some/path/` processed:
+in `/some/path/` processed when saving:
 
 ```viml
 autocmd BufWritePre /some/path/**.cpp :ruby CppAutoInclude::process
