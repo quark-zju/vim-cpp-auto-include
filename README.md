@@ -1,5 +1,7 @@
 Automatically insert or delete `#include`s for C++ code in vim.
 
+![vim-cpp-auto-include demo](/quark_zju/vim-cpp-auto-include/raw/master/demo/vim-cpp-auto-include-demo.gif)
+
 Installation
 ============
 Copy `plugin/cpp_auto_include.vim` to `~/.vim/plugin/`.
