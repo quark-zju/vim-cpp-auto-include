@@ -7,7 +7,7 @@ Installation
 Copy `plugin/cpp_auto_include.vim` to `~/.vim/plugin/`.
 
 Alternatively, with [Vundle](/gmarik/vundle), 
-add `Bundle 'quark_zju/vim-cpp-auto-include'` in `~/.vimrc` 
+add `Bundle 'quark-zju/vim-cpp-auto-include'` in `~/.vimrc` 
 and run `BundleInstall` in vim.
 
 Usage
