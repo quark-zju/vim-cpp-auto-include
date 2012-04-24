@@ -131,15 +131,12 @@ module CppAutoInclude
       begin
         use_std, includes, content = false, *includes_and_content
 
-        File.open("/tmp/headers.txt", 'w') { |f| f.puts includes_and_content; f.puts '=' * 80; f.puts content; f.puts '=' * 80 }
-
         # process each header
         HEADER_STD_COMPLETE_REGEX.each do |header, std, complete, regex|
           has_header  = includes.detect { |l| l.first.include? "<#{header}>" }
           has_keyword = (has_header && !complete) || (content =~ regex)
           use_std ||= std && has_keyword
 
-          File.open("/tmp/headers.txt", 'a') { |f| f.puts "#{header}\t #{has_header}\t #{has_keyword}" }
           if has_keyword && !has_header
             VIM::append(includes.last.last, "#include <#{header}>")
             includes = includes_and_content.first
