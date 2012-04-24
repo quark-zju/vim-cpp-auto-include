@@ -74,21 +74,42 @@ end
 
 
 module CppAutoInclude
-  HEADER_STD_KEYWORDS = [
-    ['cstdio',   false , ['scanf', 'FILE', 'puts', 'printf']],
-    ['cassert',  false , ['assert']],
-    ['cstring',  false , ['memset', 'strlen', 'strerror', /strn?cmp/, 'strcat', 'memcmp']],
-    ['cstdlib',  false , ['abs','EXIT_','NULL','exit','ato','free','malloc','rand']],
-    ['iostream', true  , ['cerr','cout','cin']],
-    ['sstream',  true  , ['stringstream']],
-    ['vector',   true  , [/vector\s*</]],
-    ['map',      true  , [/map\s*</]],
-    ['set',      true  , [/set\s*</]],
-    ['string',   true  , ['string']],
-    ['typeinfo', false , ['typeid']],
+  # shortcut to generate regex
+  C = proc do |*names| names.map { |name| /\b#{name}\b/ } end
+  F = proc do |*names| names.map { |name| /\b#{name}\s*\(/ } end
+  T = proc do |*names| names.map { |name| /\b#{name}\s*<\b/ } end
+  R = proc do |*regexs| Regexp.union(regexs.flatten) end
+
+  # header, std namespace, keyword complete (false: no auto remove #include), unioned regex
+  HEADER_STD_COMPLETE_REGEX = [
+    ['cstdio',         false, true , R[F['s?scanf', 'puts', 's?printf', 'f?gets'], C['FILE']] ],
+    ['cassert',        false, true , R[F['assert']] ],
+    ['cstring',        false, true , R[F['mem(?:cpy|set|n?cmp)', 'str(?:len|n?cmp|n?cpy|error)']] ],
+    ['cstdlib',        false, true , R[F['system','abs','ato[if]','strto[dflu]+','free','l?abs','s?rand(?:_r|om)?'], C['EXIT_[A-Z]*', 'NULL']] ],
+    ['cmath',          false, false, R[F['a?(?:sin|cos|tan)[hl]*', 'exp[m12fl]*', 'fabs[fl]?', 'log[210fl]+', 'nan[fl]?', '(?:ceil|floor)[fl]?', 'l?l?round'], C['M_[A-Z24_]*', 'NAN', 'INFINITY', 'HUGE_[A-Z]*']] ], 
+    ['cstrings',       false, true , R[F['b(?:cmp|copy|zero)', 'strn?casecmp']] ],
+    ['typeinfo',       false, true , R[C['typeid']] ],
+    ['new',            true , true,  R[F['set_new_handler'], C['nothrow']] ],
+    ['limits',         true , true , R[T['numeric_limits']] ],
+    ['algorithm',      true , false, R[F['(?:stable_|partial_)?sort(?:copy)?', 'unique(?:_copy)', 'reverse(?:_copy)', 'nth_element', '(?:lower|upper)_bound', 'binary_search', '(?:prev|next)_permutation']] ],
+    ['numeric',        true , true , R[F['partial_sum', 'accumulate', 'adjacent_difference', 'inner_product']] ],
+    ['iostream',       true , true , R[C['c(?:err|out|in)']] ],
+    ['sstream',        true , true , R[C['[io]stringstream']] ],
+    ['bitset',         true , true , R[T['bitset']] ],
+    ['complex',        true , true , R[T['complex']] ],
+    ['deque',          true , true , R[T['deque']] ],
+    ['priority_queue', true , true , R[T['priority_queue']] ],
+    ['list',           true , true , R[T['list']] ],
+    ['map',            true , true , R[T['(?:multi)?map']] ],
+    ['set',            true , true , R[T['(?:multi)?set']] ],
+    ['vector',         true , true , R[T['vector']] ],
+    ['string',         true , true , R[C['string']] ],
   ]
-  LINES_THRESHOLD = 1000
+
   USING_STD       = 'using namespace std;'
+
+  # do nothing if lines.count > LINES_THRESHOLD
+  LINES_THRESHOLD = 1000
 
   class << self
     def includes_and_content
@@ -110,16 +131,19 @@ module CppAutoInclude
       begin
         use_std, includes, content = false, *includes_and_content
 
+        File.open("/tmp/headers.txt", 'w') { |f| f.puts includes_and_content; f.puts '=' * 80; f.puts content; f.puts '=' * 80 }
+
         # process each header
-        HEADER_STD_KEYWORDS.each do |header, std, keywords|
-          has_keyword = keywords.any? { |w| content[w] }
-          has_header  = includes.detect { |l| l.first.include? header }
+        HEADER_STD_COMPLETE_REGEX.each do |header, std, complete, regex|
+          has_header  = includes.detect { |l| l.first.include? "<#{header}>" }
+          has_keyword = (has_header && !complete) || (content =~ regex)
           use_std ||= std && has_keyword
 
+          File.open("/tmp/headers.txt", 'a') { |f| f.puts "#{header}\t #{has_header}\t #{has_keyword}" }
           if has_keyword && !has_header
             VIM::append(includes.last.last, "#include <#{header}>")
             includes = includes_and_content.first
-          elsif !has_keyword && has_header
+          elsif !has_keyword && has_header && complete
             VIM::remove(has_header.last)
             includes = includes_and_content.first
           end
@@ -151,3 +175,5 @@ module CppAutoInclude
   end
 end
 EOF
+
+" vim: nowrap
