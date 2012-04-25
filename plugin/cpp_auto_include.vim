@@ -89,7 +89,7 @@ module CppAutoInclude
     ['cmath',          false, false, R[F['a?(?:sin|cos|tan)[hl]*', 'exp[m12fl]*', 'fabs[fl]?', 'log[210fl]+', 'nan[fl]?', '(?:ceil|floor)[fl]?', 'l?l?round'], C['M_[A-Z24_]*', 'NAN', 'INFINITY', 'HUGE_[A-Z]*']] ], 
     ['cstrings',       false, true , R[F['b(?:cmp|copy|zero)', 'strn?casecmp']] ],
     ['typeinfo',       false, true , R[C['typeid']] ],
-    ['new',            true , true,  R[F['set_new_handler'], C['nothrow']] ],
+    ['new',            true , true , R[F['set_new_handler'], C['nothrow']] ],
     ['limits',         true , true , R[T['numeric_limits']] ],
     ['algorithm',      true , false, R[F['(?:stable_|partial_)?sort(?:copy)?', 'unique(?:_copy)', 'reverse(?:_copy)', 'nth_element', '(?:lower|upper)_bound', 'binary_search', '(?:prev|next)_permutation']] ],
     ['numeric',        true , true , R[F['partial_sum', 'accumulate', 'adjacent_difference', 'inner_product']] ],
