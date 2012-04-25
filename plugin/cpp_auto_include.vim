@@ -91,7 +91,7 @@ module CppAutoInclude
     ['typeinfo',       false, true , R[C['typeid']] ],
     ['new',            true , true , R[F['set_new_handler'], C['nothrow']] ],
     ['limits',         true , true , R[T['numeric_limits']] ],
-    ['algorithm',      true , false, R[F['(?:stable_|partial_)?sort(?:copy)?', 'unique(?:_copy)', 'reverse(?:_copy)', 'nth_element', '(?:lower|upper)_bound', 'binary_search', '(?:prev|next)_permutation']] ],
+    ['algorithm',      true , false, R[F['(?:stable_|partial_)?sort(?:_copy)?', 'unique(?:_copy)', 'reverse(?:_copy)', 'nth_element', '(?:lower|upper)_bound', 'binary_search', '(?:prev|next)_permutation']] ],
     ['numeric',        true , true , R[F['partial_sum', 'accumulate', 'adjacent_difference', 'inner_product']] ],
     ['iostream',       true , true , R[C['c(?:err|out|in)']] ],
     ['sstream',        true , true , R[C['[io]stringstream']] ],
