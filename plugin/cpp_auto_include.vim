@@ -85,7 +85,7 @@ module CppAutoInclude
     ['cstdio',         false, true , R[F['s?scanf', 'puts', 's?printf', 'f?gets'], C['FILE']] ],
     ['cassert',        false, true , R[F['assert']] ],
     ['cstring',        false, true , R[F['mem(?:cpy|set|n?cmp)', 'str(?:len|n?cmp|n?cpy|error)']] ],
-    ['cstdlib',        false, true , R[F['system','abs','ato[if]','strto[dflu]+','free','l?abs','s?rand(?:_r|om)?'], C['EXIT_[A-Z]*', 'NULL']] ],
+    ['cstdlib',        false, true , R[F['system','abs','ato[if]','strto[dflu]+','free','exit','l?abs','s?rand(?:_r|om)?'], C['EXIT_[A-Z]*', 'NULL']] ],
     ['cmath',          false, false, R[F['a?(?:sin|cos|tan)[hl]*', 'exp[m12fl]*', 'fabs[fl]?', 'log[210fl]+', 'nan[fl]?', '(?:ceil|floor)[fl]?', 'l?l?round', 'sqrt[fl]?'], C['M_[A-Z24_]*', 'NAN', 'INFINITY', 'HUGE_[A-Z]*']] ], 
     ['cstrings',       false, true , R[F['b(?:cmp|copy|zero)', 'strn?casecmp']] ],
     ['typeinfo',       false, true , R[C['typeid']] ],
