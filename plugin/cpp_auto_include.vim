@@ -122,6 +122,8 @@ module CppAutoInclude
       VIM::lines.each_with_index do |l, i|
         if l =~ /^\s*#\s*include/
           includes << [l, i+1]
+        elsif l =~ /^\s*namespace/ and includes.length == 1
+          includes[0][-1] = i
         else
           content << l.gsub(/\/\/[^"]*(?:"[^"']*"[^"]*)*$/,'') << "\n"
         end
