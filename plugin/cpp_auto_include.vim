@@ -111,6 +111,7 @@ module CppAutoInclude
   ]
 
   USING_STD       = 'using namespace std;'
+  USING_STD_REGEX = /using namespace std;|std::/
 
   # do nothing if lines.count > LINES_THRESHOLD
   LINES_THRESHOLD = 1000
@@ -138,7 +139,7 @@ module CppAutoInclude
         # process each header
         HEADER_STD_COMPLETE_REGEX.each do |header, std, complete, regex|
           has_header  = includes.detect { |l| l.first.include? "<#{header}>" }
-          has_keyword = (has_header && !complete) || (content =~ regex)
+          has_keyword = (has_header && !complete) || (content =~ rex)
           use_std ||= std && has_keyword
 
           if has_keyword && !has_header
@@ -159,7 +160,7 @@ module CppAutoInclude
         end
 
         # add / remove 'using namespace std'
-        has_std = content[USING_STD]
+        has_std = content[USING_STD_REGEX]
 
         if use_std && !has_std && !includes.empty?
           VIM::append(includes.last.last+1, USING_STD) 
