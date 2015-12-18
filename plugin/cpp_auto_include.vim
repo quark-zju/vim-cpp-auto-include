@@ -108,6 +108,22 @@ module CppAutoInclude
     ['ctime',          false, true , R[F['time', 'clock'], C['CLOCKS_PER_SEC']]],
     ['string',         true , true , R[C['string']] ],
     ['utility',        true , true , R[T['pair'], F['make_pair']] ],
+    ['array',          true , true , R[T['array']] ],
+    ['atomic',         true , true , R[T['atomic_']] ],
+    ['cuchar',         true , true , R[F['mbrtoc(?:16|32)', 'c(?:16|32)rtomb']] ],
+    ['forward_list',   true , true , R[T['forward_list']] ],
+    ['iomanip',        true , true , R[F['setprecision', 'setiosflags', 'setbase', 'setw', '(?:set|put)_(?:money|time)'], C['fixed', 'hex']]],
+    ['iostream',       true , true , R[C['c(?:err|out|in)']] ],
+    ['limits',         true , true , R[T['numeric_limits']] ],
+    ['list',           true , true , R[T['list']] ],
+    ['map',            true , true , R[T['(?:multi)?map']] ],
+    ['new',            true , true , R[F['set_new_handler'], C['nothrow']] ],
+    ['thread',         true , true , R[C['thread'], F['this_thread::']],],
+    ['tuple',          true , true , R[T['tuple'], F['make_tuple', 'tie', 'tuple_cat', 'forward_as_tuple']] ],
+    ['type_traits',    true , true , R[T['aligned_storage', 'alignment_of', 'common_type', 'conditional', 'decay', 'enable_if', 'extent', 'has_virtual_destructor', 'rank', 'result_of', 'underlying_type', 'add_(const|cv|lvalue_reference|pointer|rvalue_reference|volatile)', 'is_((nothrow|trivially)_)?((move|copy|default)_)?(assignable|constructible|destructible)', 'is_member_((function|object)_)?pointer', 'is_[rl]value_reference', 'remove_(all_extents|const|cv|extent|pointer|reference|volatile)', 'is_(abstract|arithmetic|array|base_of|class|compound|const|convertible|empty|enum|floating_point|function|fundamental|integral|literal_type|object|pod|(null_)?pointer|polymorphic|reference|same|scalar|(un)?signed|standard_layout|trivial|union|volatile|void)', 'make_(un)?signed' ]] ],
+    ['typeindex',      true , true , R[T['type_index']] ],
+    ['unordered_map',  true , true , R[T['unordered_(?:multi)?map']] ],
+    ['unordered_set',  true , true , R[T['unordered_(?:multi)?set']] ],
   ]
 
   USING_STD       = 'using namespace std;'
