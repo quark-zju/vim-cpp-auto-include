@@ -83,6 +83,7 @@ module CppAutoInclude
   # header, std namespace, keyword complete (false: no auto remove #include), unioned regex
   HEADER_STD_COMPLETE_REGEX = [
     ['algorithm',      true , true , R[F['(?:stable_|partial_)?sort(?:_copy)?', 'unique(?:_copy)?', 'reverse(?:_copy)?', 'nth_element', '(?:lower|upper)_bound', 'binary_search', '(?:prev|next)_permutation', 'min', 'max', 'count', 'random_shuffle', 'swap']] ],
+    ['array',          true , true , R[T['array']]],
     ['bitset',         true , true , R[T['bitset']] ],
     ['cassert',        false, true , R[F['assert']] ],
     ['cmath',          false, true , R[F['pow[fl]?','a?(?:sin|cos|tan)[hl]*', 'atan2[fl]?', 'exp[m12fl]*', 'fabs[fl]?', 'log[210fl]+', 'nan[fl]?', '(?:ceil|floor)[fl]?', 'l?l?round[fl]?', 'sqrt[fl]?'], C['M_[A-Z24_]*', 'NAN', 'INFINITY', 'HUGE_[A-Z]*']] ],
@@ -92,6 +93,7 @@ module CppAutoInclude
     ['cstring',        false, true , R[F['mem(?:cpy|set|n?cmp)', 'str(?:len|n?cmp|n?cpy|error|cat|str|chr)']] ],
     ['ctime',          false, true , R[F['time', 'clock'], C['CLOCKS_PER_SEC']]],
     ['deque',          true , true , R[T['deque']] ],
+    ['forward_list',   true , true , R[T['forward_list']]],
     ['fstream',        true , true , R[T['fstream']] ],
     ['iomanip',        true , true , R[F['setprecision', 'setbase', 'setw'], C['fixed', 'hex']]],
     ['iostream',       true , true , R[C['c(?:err|out|in)']] ],
@@ -102,10 +104,15 @@ module CppAutoInclude
     ['numeric',        true , true , R[F['partial_sum', 'accumulate', 'adjacent_difference', 'inner_product']] ],
     ['queue',          true , true , R[T['queue','priority_queue']] ],
     ['set',            true , true , R[T['(?:multi)?set']] ],
+    ['span',           true , true , R[T['span']] ],
     ['sstream',        true , true , R[C['[io]?stringstream']] ],
+    ['stack',          true , true , R[C['stack']] ],
     ['string',         true , true , R[C['string']] ],
     ['strings.h',      false, true , R[F['b(?:cmp|copy|zero)', 'strn?casecmp']] ],
+    ['tuple',          true , true , R[T['tuple'], F['make_tuple']] ],
     ['typeinfo',       false, true , R[C['typeid']] ],
+    ['unordered_map',  true , true , R[T['(?:multi)?unordered_map']]],
+    ['unordered_set',  true , true , R[T['(?:multi)?unordered_set']]],
     ['utility',        true , true , R[T['pair'], F['make_pair']] ],
     ['vector',         true , true , R[T['vector']] ],
   ]
