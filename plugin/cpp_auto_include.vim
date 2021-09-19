@@ -111,7 +111,6 @@ module CppAutoInclude
   ]
 
   USING_STD       = 'using namespace std;'
-  USING_STD_REGEX = /using namespace std;|std::/
 
   # do nothing if lines.count > LINES_THRESHOLD
   LINES_THRESHOLD = 1000
@@ -160,8 +159,7 @@ module CppAutoInclude
         end
 
         # add / remove 'using namespace std'
-        # has_std = content[USING_STD]
-        has_std = content[USING_STD_REGEX]
+        has_std = content[USING_STD]
 
         if use_std && !has_std && !includes.empty?
           VIM::append(includes.last.last+1, USING_STD) 
