@@ -82,35 +82,36 @@ module CppAutoInclude
 
   # header, std namespace, keyword complete (false: no auto remove #include), unioned regex
   HEADER_STD_COMPLETE_REGEX = [
-    ['cstdio',         false, true , R[F['s?scanf', 'puts', 's?printf', 'f?gets', '(?:get|put)char', 'getc'], C['FILE','std(?:in|out|err)','EOF']] ],
-    ['cassert',        false, true , R[F['assert']] ],
-    ['cstring',        false, true , R[F['mem(?:cpy|set|n?cmp)', 'str(?:len|n?cmp|n?cpy|error|cat|str|chr)']] ],
-    ['cstdlib',        false, true , R[F['system','abs','ato[if]', 'itoa', 'strto[dflu]+','free','exit','l?abs','s?rand(?:_r|om)?','qsort'], C['EXIT_[A-Z]*', 'NULL']] ],
-    ['cmath',          false, true , R[F['pow[fl]?','a?(?:sin|cos|tan)[hl]*', 'atan2[fl]?', 'exp[m12fl]*', 'fabs[fl]?', 'log[210fl]+', 'nan[fl]?', '(?:ceil|floor)[fl]?', 'l?l?round[fl]?', 'sqrt[fl]?'], C['M_[A-Z24_]*', 'NAN', 'INFINITY', 'HUGE_[A-Z]*']] ],
-    ['strings.h',      false, true , R[F['b(?:cmp|copy|zero)', 'strn?casecmp']] ],
-    ['typeinfo',       false, true , R[C['typeid']] ],
-    ['new',            true , true , R[F['set_new_handler'], C['nothrow']] ],
-    ['limits',         true , true , R[T['numeric_limits']] ],
     ['algorithm',      true , true , R[F['(?:stable_|partial_)?sort(?:_copy)?', 'unique(?:_copy)?', 'reverse(?:_copy)?', 'nth_element', '(?:lower|upper)_bound', 'binary_search', '(?:prev|next)_permutation', 'min', 'max', 'count', 'random_shuffle', 'swap']] ],
-    ['numeric',        true , true , R[F['partial_sum', 'accumulate', 'adjacent_difference', 'inner_product']] ],
-    ['iostream',       true , true , R[C['c(?:err|out|in)']] ],
-    ['sstream',        true , true , R[C['[io]?stringstream']] ],
     ['bitset',         true , true , R[T['bitset']] ],
+    ['cassert',        false, true , R[F['assert']] ],
+    ['cmath',          false, true , R[F['pow[fl]?','a?(?:sin|cos|tan)[hl]*', 'atan2[fl]?', 'exp[m12fl]*', 'fabs[fl]?', 'log[210fl]+', 'nan[fl]?', '(?:ceil|floor)[fl]?', 'l?l?round[fl]?', 'sqrt[fl]?'], C['M_[A-Z24_]*', 'NAN', 'INFINITY', 'HUGE_[A-Z]*']] ],
     ['complex',        true , true , R[T['complex']] ],
+    ['cstdio',         false, true , R[F['s?scanf', 'puts', 's?printf', 'f?gets', '(?:get|put)char', 'getc'], C['FILE','std(?:in|out|err)','EOF']] ],
+    ['cstdlib',        false, true , R[F['system','abs','ato[if]', 'itoa', 'strto[dflu]+','free','exit','l?abs','s?rand(?:_r|om)?','qsort'], C['EXIT_[A-Z]*', 'NULL']] ],
+    ['cstring',        false, true , R[F['mem(?:cpy|set|n?cmp)', 'str(?:len|n?cmp|n?cpy|error|cat|str|chr)']] ],
+    ['ctime',          false, true , R[F['time', 'clock'], C['CLOCKS_PER_SEC']]],
     ['deque',          true , true , R[T['deque']] ],
-    ['queue',          true , true , R[T['queue','priority_queue']] ],
+    ['fstream',        true , true , R[T['fstream']] ],
+    ['iomanip',        true , true , R[F['setprecision', 'setbase', 'setw'], C['fixed', 'hex']]],
+    ['iostream',       true , true , R[C['c(?:err|out|in)']] ],
+    ['limits',         true , true , R[T['numeric_limits']] ],
     ['list',           true , true , R[T['list']] ],
     ['map',            true , true , R[T['(?:multi)?map']] ],
+    ['new',            true , true , R[F['set_new_handler'], C['nothrow']] ],
+    ['numeric',        true , true , R[F['partial_sum', 'accumulate', 'adjacent_difference', 'inner_product']] ],
+    ['queue',          true , true , R[T['queue','priority_queue']] ],
     ['set',            true , true , R[T['(?:multi)?set']] ],
-    ['vector',         true , true , R[T['vector']] ],
-    ['iomanip',        true , true , R[F['setprecision', 'setbase', 'setw'], C['fixed', 'hex']]],
-    ['fstream',        true , true , R[T['fstream']] ],
-    ['ctime',          false, true , R[F['time', 'clock'], C['CLOCKS_PER_SEC']]],
+    ['sstream',        true , true , R[C['[io]?stringstream']] ],
     ['string',         true , true , R[C['string']] ],
+    ['strings.h',      false, true , R[F['b(?:cmp|copy|zero)', 'strn?casecmp']] ],
+    ['typeinfo',       false, true , R[C['typeid']] ],
     ['utility',        true , true , R[T['pair'], F['make_pair']] ],
+    ['vector',         true , true , R[T['vector']] ],
   ]
 
   USING_STD       = 'using namespace std;'
+  USING_STD_REGEX = /using namespace std;|std::/
 
   # do nothing if lines.count > LINES_THRESHOLD
   LINES_THRESHOLD = 1000
@@ -159,7 +160,8 @@ module CppAutoInclude
         end
 
         # add / remove 'using namespace std'
-        has_std = content[USING_STD]
+        # has_std = content[USING_STD]
+        has_std = content[USING_STD_REGEX]
 
         if use_std && !has_std && !includes.empty?
           VIM::append(includes.last.last+1, USING_STD) 
